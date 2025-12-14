@@ -1,9 +1,9 @@
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -12,13 +12,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rhythmmusic.model.QueueItem
 import com.example.rhythmmusic.viewmodel.PlaybackViewModel
+import com.example.rhythmmusic.R
 
 @Composable
-fun PlayerScreen(viewModel: PlaybackViewModel = hiltViewModel()) {
+fun PlayerScreen(
+    innerPadding: PaddingValues,
+    viewModel: PlaybackViewModel = hiltViewModel()
+) {
 
     // Collect state from ViewModel
     val playbackState by viewModel.playbackState.collectAsState(initial = null)
@@ -26,6 +31,7 @@ fun PlayerScreen(viewModel: PlaybackViewModel = hiltViewModel()) {
     val playlist by viewModel.playlist.collectAsState()
 
     Playlist(
+        modifier = Modifier.padding(innerPadding).fillMaxWidth().fillMaxHeight(0.8f),
         playlist = playlist,
         onItemClick = viewModel::playFromPlaylist
     )
@@ -34,7 +40,7 @@ fun PlayerScreen(viewModel: PlaybackViewModel = hiltViewModel()) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Track title
@@ -59,10 +65,9 @@ fun PlayerScreen(viewModel: PlaybackViewModel = hiltViewModel()) {
             IconButton(onClick = { viewModel.skipPrevious() }) {
                 Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "Previous")
             }
-
             if (playbackState?.state == PlaybackStateCompat.STATE_PLAYING) {
                 IconButton(onClick = { viewModel.pause() }) {
-                    Icon(Icons.Default.CheckCircle, contentDescription = "Pause")
+                    Icon(painter =  painterResource(R.drawable.vd_pause), contentDescription = "Pause")
                 }
             } else {
                 IconButton(onClick = { viewModel.play() }) {
@@ -79,10 +84,13 @@ fun PlayerScreen(viewModel: PlaybackViewModel = hiltViewModel()) {
 
 @Composable
 fun Playlist(
+    modifier : Modifier,
     playlist: List<QueueItem>,
     onItemClick: (Int) -> Unit
 ) {
-    LazyColumn(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f)) {
+    LazyColumn(
+        modifier = modifier
+    ) {
         itemsIndexed(playlist) { index, item ->
             Row(
                 modifier = Modifier

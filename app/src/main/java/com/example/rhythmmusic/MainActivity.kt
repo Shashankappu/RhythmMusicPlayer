@@ -34,26 +34,10 @@ class MainActivity : ComponentActivity() {
         TimberLog.d("started service")
         setContent {
             RhythmMusicTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
-                    PlayerScreen()
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    PlayerScreen(innerPadding)
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RhythmMusicTheme {
-        Greeting("Android")
     }
 }
